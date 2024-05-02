@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "315811585941",
+    "project_id": "proyecto-appnotasflutter",
+    "storage_bucket": "proyecto-appnotasflutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315811585941:android:bf7dc03625e28d44a5a09c",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_appnotas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwBso-xuutkJ8WC2f7xFdX9gscyDZFSbE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
