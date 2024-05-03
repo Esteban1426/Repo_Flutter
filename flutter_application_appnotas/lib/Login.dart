@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_application_appnotas/Registro.dart';
+import 'package:flutter_application_appnotas/BotonAnimado.dart';
 import 'package:flutter_application_appnotas/GestorNotas.dart';
 
 class Login extends StatelessWidget {
@@ -12,63 +13,35 @@ class Login extends StatelessWidget {
         title: Text('Iniciar Sesión'),
       ),
       body: SingleChildScrollView(
-        child: LoginForm(),
+        child: FormatoLogin(),
       ),
     );
   }
 }
 
-class LoginForm extends StatefulWidget {
+class FormatoLogin extends StatefulWidget {
   @override
-  _LoginFormState createState() => _LoginFormState();
+  EstadoFormato createState() => EstadoFormato();
 }
 
-class _LoginFormState extends State<LoginForm> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class EstadoFormato extends State<FormatoLogin> {
+  final FirebaseAuth Autenticacion = FirebaseAuth.instance;
+  final TextEditingController email = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
   Future<void> _signInWithEmailAndPassword(BuildContext context) async {
-    try {
-      final String email = _emailController.text.trim();
-      final String password = _passwordController.text;
+  try {
+    final String emailDato = email.text.trim();
+    final String passwordDato = password.text;
 
-      // Iniciar sesión con email y contraseña utilizando Firebase Authentication
-      await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      // Si el inicio de sesión es exitoso, muestra una alerta y navega a la siguiente pantalla
+    if (emailDato.isEmpty || passwordDato.isEmpty) {
+      // Si el correo electrónico o la contraseña están vacíos, muestra un mensaje de error
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Inicio de Sesión Exitoso"),
-            content: Text("¡Bienvenido! Has iniciado sesión correctamente."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => GestorNotas()),
-                  );
-                },
-                child: Text("OK"),
-              ),
-            ],
-          );
-        },
-      );
-    } catch (e) {
-      // Si ocurre un error durante el inicio de sesión, muestra un mensaje de error
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Error al Iniciar Sesión"),
-            content: Text("Hubo un error al iniciar sesión. Por favor, inténtalo de nuevo."),
+            title: Text("Error"),
+            content: Text("Por favor, completa todos los campos."),
             actions: [
               TextButton(
                 onPressed: () {
@@ -80,8 +53,59 @@ class _LoginFormState extends State<LoginForm> {
           );
         },
       );
+      return; // Salir del método sin intentar iniciar sesión
     }
+
+    // Iniciar sesión con email y contraseña utilizando Firebase Authentication
+    await Autenticacion.signInWithEmailAndPassword(
+      email: emailDato,
+      password: passwordDato,
+    );
+
+    // Si el inicio de sesión es exitoso, muestra una alerta y navega a la siguiente pantalla
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Inicio de Sesión Exitoso"),
+          content: Text("¡Bienvenido! Has iniciado sesión correctamente."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => GestorNotas()),
+                );
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  } catch (e) {
+    // Si ocurre un error durante el inicio de sesión, muestra un mensaje de error
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error al Iniciar Sesión"),
+          content: Text("Hubo un error al iniciar sesión. Por favor, inténtalo de nuevo."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
+}
+
 
   late String imageUrl;
   final storage = FirebaseStorage.instance;
@@ -127,23 +151,26 @@ class _LoginFormState extends State<LoginForm> {
                 : Placeholder(), // Placeholder when no image available
           ),
           TextField(
-            controller: _emailController,
+            controller: email,
             decoration: InputDecoration(
               labelText: 'Correo Electrónico',
             ),
           ),
           SizedBox(height: 10),
           TextField(
-            controller: _passwordController,
+            controller: password,
             decoration: InputDecoration(
               labelText: 'Contraseña',
             ),
             obscureText: true,
           ),
           SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () => _signInWithEmailAndPassword(context),
-            child: Text('Iniciar Sesión'),
+          BotonAnimado(
+            TextoBoton: 'Iniciar Sesion',
+            onPressed: () {
+              _signInWithEmailAndPassword(context);
+            },
+            contexto: context,
           ),
           SizedBox(height: 10),
           GestureDetector(
@@ -162,8 +189,8 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    email.dispose();
+    password.dispose();
     super.dispose();
   }
 }

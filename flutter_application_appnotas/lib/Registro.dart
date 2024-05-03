@@ -3,42 +3,40 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_application_appnotas/Login.dart';
+import 'package:flutter_application_appnotas/BotonAnimado.dart';
 
 class Registro extends StatefulWidget {
   @override
-  _RegistroState createState() => _RegistroState();
+  EstadoRegistro createState() => EstadoRegistro();
 }
 
-class _RegistroState extends State<Registro> {
-  final _auth = FirebaseAuth.instance;
-  final _database =
-      FirebaseDatabase(databaseURL: 'https://proyecto-appnotasflutter-default-rtdb.firebaseio.com/')
-          .ref();
-  final _formKey = GlobalKey<FormState>();
+class EstadoRegistro extends State<Registro> {
+  final Autenticacion = FirebaseAuth.instance;
+  final BaseDatos = FirebaseDatabase(databaseURL: 'https://proyecto-appnotasflutter-default-rtdb.firebaseio.com/').ref();
+  final _Key = GlobalKey<FormState>();
 
-  TextEditingController _nombreController = TextEditingController();
-  TextEditingController _CarreraController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _telefonoController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
+  TextEditingController nombre = TextEditingController();
+  TextEditingController carrera = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController telefono = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController confirmarP = TextEditingController();
 
   Future<void> _registro() async {
     try {
-      final newUser = await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      final NuevoUser = await Autenticacion.createUserWithEmailAndPassword(
+        email: email.text,
+        password: password.text,
       );
 
-      if (newUser != null) {
-        await _database.child('usuarios').child(newUser.user!.uid).set({
-          'nombre': _nombreController.text,
-          'carrera': _CarreraController.text,
-          'email': _emailController.text,
-          'telefono': _telefonoController.text,
+      if (NuevoUser != null) {
+        await BaseDatos.child('usuarios').child(NuevoUser.user!.uid).set({
+          'nombre': nombre.text,
+          'carrera': carrera.text,
+          'email': email.text,
+          'telefono': telefono.text,
         });
 
-        // Registro exitoso, muestra una alerta
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -50,9 +48,9 @@ class _RegistroState extends State<Registro> {
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => Login()),
-                  );
+                      context,
+                      MaterialPageRoute(builder: (context) => Login()),
+                    );
                   },
                   child: Text("OK"),
                 ),
@@ -62,7 +60,6 @@ class _RegistroState extends State<Registro> {
         );
       }
     } catch (e) {
-      // Error en el registro, muestra una alerta
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -83,29 +80,25 @@ class _RegistroState extends State<Registro> {
     }
   }
 
-  late String imageUrl;
+  late String imagenUrl;
   final storage = FirebaseStorage.instance;
   @override
   void initState() {
     super.initState();
-    // Set the initial value of imageUrl to an empty string
-    imageUrl = '';
-    //Retrieve the image from Firebase Storage
+    imagenUrl = '';
     getImageUrl();
   }
 
   Future<void> getImageUrl() async {
-    // Get the reference to the image file in Firebase Storage
     final ref = storage.ref().child('usuario.jpg');
-    // Get the imageUrl to download URL
     try {
       final url = await ref.getDownloadURL();
-      print("URL de descarga obtenida: $url"); // Print for debugging
+      print("URL de descarga obtenida: $url");
       setState(() {
-        imageUrl = url;
-    });
+        imagenUrl = url;
+      });
     } catch (e) {
-      print("Error al obtener la URL de descarga: $e"); // Print for debugging
+      print("Error al obtener la URL de descarga: $e");
     }
   }
 
@@ -118,22 +111,22 @@ class _RegistroState extends State<Registro> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey,
+          key: _Key,
           child: Column(
             children: [
               SizedBox(
                 width: 200,
                 height: 200,
-                child: imageUrl.isNotEmpty
+                child: imagenUrl.isNotEmpty
                     ? Image(
-                        image: NetworkImage(imageUrl),
+                        image: NetworkImage(imagenUrl),
                         fit: BoxFit.cover,
                       )
-                    : Placeholder(), // Placeholder when no image available
+                    : Placeholder(),
               ),
               SizedBox(height: 20.0),
               TextFormField(
-                controller: _nombreController,
+                controller: nombre,
                 decoration: InputDecoration(
                   hintText: 'Nombre',
                 ),
@@ -146,7 +139,7 @@ class _RegistroState extends State<Registro> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
-                controller: _CarreraController,
+                controller: carrera,
                 decoration: InputDecoration(
                   hintText: 'Carrera',
                 ),
@@ -159,7 +152,7 @@ class _RegistroState extends State<Registro> {
               ),
               SizedBox(height: 10.0),
               TextFormField(
-                controller: _emailController,
+                controller: email,
                 decoration: InputDecoration(
                   hintText: 'Correo electrónico',
                 ),
@@ -173,7 +166,7 @@ class _RegistroState extends State<Registro> {
               ),
               SizedBox(height: 10.0),
               TextFormField(
-                controller: _telefonoController,
+                controller: telefono,
                 decoration: InputDecoration(
                   hintText: 'Telefono',
                 ),
@@ -187,7 +180,7 @@ class _RegistroState extends State<Registro> {
               ),
               SizedBox(height: 10.0),
               TextFormField(
-                controller: _passwordController,
+                controller: password,
                 decoration: InputDecoration(
                   hintText: 'Password',
                 ),
@@ -201,26 +194,27 @@ class _RegistroState extends State<Registro> {
               ),
               SizedBox(height: 10.0),
               TextFormField(
-                controller: _confirmPasswordController,
+                controller: confirmarP,
                 decoration: InputDecoration(
                   hintText: 'Confirma Password',
                 ),
                 obscureText: true,
                 validator: (value) {
-                  if (value != _passwordController.text) {
+                  if (value != password.text) {
                     return 'Las contraseñas no coinciden';
                   }
                   return null;
                 },
               ),
-              SizedBox(height: 20.0),
-              ElevatedButton(
+              SizedBox(height: 40),
+              BotonAnimado(
+                TextoBoton: 'REGISTRAR',
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (_Key.currentState!.validate()) {
                     _registro();
                   }
                 },
-                child: Text('Registrarse'),
+                contexto: context,
               ),
             ],
           ),

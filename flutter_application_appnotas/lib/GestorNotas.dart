@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_application_appnotas/BotonAnimado.dart';
 
 class GestorNotas extends StatefulWidget {
   @override
-  _GestorNotasState createState() => _GestorNotasState();
+  estadoGestor createState() => estadoGestor();
 }
 
-class _GestorNotasState extends State<GestorNotas> {
-  TextEditingController nota1Controller = TextEditingController();
-  TextEditingController nota2Controller = TextEditingController();
-  TextEditingController nota3Controller = TextEditingController();
-  TextEditingController nota4Controller = TextEditingController();
-  TextEditingController nota5Controller = TextEditingController();
+class estadoGestor extends State<GestorNotas> {
+  TextEditingController nota1 = TextEditingController();
+  TextEditingController nota2 = TextEditingController();
+  TextEditingController nota3 = TextEditingController();
+  TextEditingController nota4 = TextEditingController();
+  TextEditingController nota5 = TextEditingController();
 
   double calcularPromedio() {
-    List<TextEditingController> controllers = [
-      nota1Controller,
-      nota2Controller,
-      nota3Controller,
-      nota4Controller,
-      nota5Controller,
+    List<TextEditingController> Controladores = [
+      nota1,
+      nota2,
+      nota3,
+      nota4,
+      nota5,
     ];
 
     List<double> notas = [];
 
-    for (TextEditingController controller in controllers) {
-      if (controller.text.isNotEmpty) {
-        notas.add(double.parse(controller.text));
+    for (TextEditingController Controlador in Controladores) {
+      if (Controlador.text.isNotEmpty) {
+        notas.add(double.parse(Controlador.text));
       }
     }
 
@@ -48,20 +49,20 @@ class _GestorNotasState extends State<GestorNotas> {
           );
         },
       );
-      return 0.0; // Devolver 0.0 para indicar que el cálculo del promedio falló
+      return 0.0;
     }
 
     double sumatoria = notas.reduce((value, element) => value + element);
     return sumatoria / notas.length;
   }
 
-  late String imageUrl;
+  late String imagenUrl;
   final storage = FirebaseStorage.instance;
 
   @override
   void initState() {
     super.initState();
-    imageUrl = '';
+    imagenUrl = '';
     getImageUrl();
   }
 
@@ -71,7 +72,7 @@ class _GestorNotasState extends State<GestorNotas> {
       final url = await ref.getDownloadURL();
       print("URL de descarga obtenida: $url");
       setState(() {
-        imageUrl = url;
+        imagenUrl = url;
       });
     } catch (e) {
       print("Error al obtener la URL de descarga: $e");
@@ -93,9 +94,9 @@ class _GestorNotasState extends State<GestorNotas> {
               SizedBox(
                 width: 200,
                 height: 200,
-                child: imageUrl.isNotEmpty
+                child: imagenUrl.isNotEmpty
                     ? Image(
-                        image: NetworkImage(imageUrl),
+                        image: NetworkImage(imagenUrl),
                         fit: BoxFit.cover,
                       )
                     : Placeholder(), // Cambiado a Placeholder para evitar error de carga
@@ -111,7 +112,7 @@ class _GestorNotasState extends State<GestorNotas> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     TextField(
-                      controller: nota1Controller,
+                      controller: nota1,
                       decoration: InputDecoration(
                         hintText: 'Agrega nota 1',
                       ),
@@ -120,7 +121,7 @@ class _GestorNotasState extends State<GestorNotas> {
                     ),
                     SizedBox(height: 10.0),
                     TextField(
-                      controller: nota2Controller,
+                      controller: nota2,
                       decoration: InputDecoration(
                         hintText: 'Agrega nota 2',
                       ),
@@ -129,7 +130,7 @@ class _GestorNotasState extends State<GestorNotas> {
                     ),
                     SizedBox(height: 10.0),
                     TextField(
-                      controller: nota3Controller,
+                      controller: nota3,
                       decoration: InputDecoration(
                         hintText: 'Agrega nota 3',
                       ),
@@ -138,7 +139,7 @@ class _GestorNotasState extends State<GestorNotas> {
                     ),
                     SizedBox(height: 10.0),
                     TextField(
-                      controller: nota4Controller,
+                      controller: nota4,
                       decoration: InputDecoration(
                         hintText: 'Agrega nota 4',
                       ),
@@ -147,7 +148,7 @@ class _GestorNotasState extends State<GestorNotas> {
                     ),
                     SizedBox(height: 10.0),
                     TextField(
-                      controller: nota5Controller,
+                      controller: nota5,
                       decoration: InputDecoration(
                         hintText: 'Agrega nota 5',
                       ),
@@ -155,10 +156,31 @@ class _GestorNotasState extends State<GestorNotas> {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 20.0),
-                    ElevatedButton(
+                    BotonAnimado(
+                      TextoBoton: 'Calcular Promedio',
                       onPressed: () {
                         double promedio = calcularPromedio();
-                        if (promedio != 0.0) {
+                        if (promedio == 0.0) {
+                          // Muestra una alerta si todas las notas son 0.0
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Error"),
+                                content: Text("No se necesita calcular el promedio si todas las notas son 0.0."),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Cerrar"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else if (promedio != 0.0) {
+                          // Muestra el promedio si es diferente de 0.0
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -178,7 +200,7 @@ class _GestorNotasState extends State<GestorNotas> {
                           );
                         }
                       },
-                      child: Text('Calcular Promedio'),
+                      contexto: context,
                     ),
                   ],
                 ),

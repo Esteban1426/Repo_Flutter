@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_application_appnotas/BotonAnimado.dart';
+import 'package:flutter_application_appnotas/TituloAnimado.dart';
 import 'package:flutter_application_appnotas/Login.dart';
 import 'firebase_options.dart';
 
@@ -9,17 +11,19 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(FirestoreImageDisplay());
+  runApp(MaterialApp(
+    home: ImagenesPricipal(),
+  ));
 }
 
-class FirestoreImageDisplay extends StatefulWidget {
-  const FirestoreImageDisplay({Key? key});
+class ImagenesPricipal extends StatefulWidget {
+  const ImagenesPricipal({Key? key});
 
   @override
-  State<FirestoreImageDisplay> createState() => _MyWidgetState();
+  State<ImagenesPricipal> createState() => WidgetImagenes();
 }
 
-class _MyWidgetState extends State<FirestoreImageDisplay> {
+class WidgetImagenes extends State<ImagenesPricipal> {
   late String imageUrl;
   final storage = FirebaseStorage.instance;
 
@@ -55,7 +59,9 @@ class _MyWidgetState extends State<FirestoreImageDisplay> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
+              SizedBox(height: 50.0),
+              TituloAnimado(),
+              /* Text(
                 '¡Bienvenido estudiante!',
                 style: TextStyle(
                   fontSize: 60.0,
@@ -63,7 +69,7 @@ class _MyWidgetState extends State<FirestoreImageDisplay> {
                   color: Colors.black,
                 ),
                 textAlign: TextAlign.center,
-              ),
+              ), */
               SizedBox(
                 height: 300.0,
                 child: imageUrl.isNotEmpty
@@ -71,60 +77,20 @@ class _MyWidgetState extends State<FirestoreImageDisplay> {
                         image: NetworkImage(imageUrl),
                         fit: BoxFit.cover,
                       )
-                    : Placeholder(), // Placeholder cuando no hay imagen
+                    : Placeholder(),
               ),
               SizedBox(height: 20.0),
-              AnimatedButton(),
+                BotonAnimado(
+                TextoBoton: 'Iniciar',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Login()),
+                  );
+                },
+                contexto: context,
+              ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class AnimatedButton extends StatefulWidget {
-  @override
-  _AnimatedButtonState createState() => _AnimatedButtonState();
-}
-
-class _AnimatedButtonState extends State<AnimatedButton> {
-  bool _isPressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          _isPressed = !_isPressed;
-        });
-        if (_isPressed) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Login()),
-          );
-        }
-      },
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (_isPressed) {
-            return Colors.white;
-          }
-          return Color.fromARGB(255, 255, 38, 0);
-        }),
-      ),
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 50.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30.0),
-          color: Colors.transparent,
-        ),
-        child: Text(
-          'Iniciar',
-          style: TextStyle(
-            fontSize: 18.0,
-            color: _isPressed ? Color.fromARGB(255, 255, 0, 0) : Colors.white,
           ),
         ),
       ),
