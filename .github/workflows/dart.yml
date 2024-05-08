@@ -1,0 +1,21 @@
+name: Validacion Base datos
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    env:
+      database: ${{secrets.DATABASE}}
+    
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar URL de la base de datos
+        run: |
+          echo "URL de la base de datos: ${{env.database}}"
+          
+      - name: Validar configuración de la base de datos
+        if: ${{env.database != ''}}
+        run: echo "Las credenciales de la base de datos están configuradas correctamente"
