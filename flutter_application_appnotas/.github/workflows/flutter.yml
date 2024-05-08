@@ -1,0 +1,30 @@
+name: Flutter Contruccion
+
+on: push  
+jobs:  
+
+  crear_construir_proyecto:  
+    runs-on: ubuntu-latest  
+
+    steps:  
+
+    - uses: actions/checkout@v4  # Paso para verificar el código del repositorio
+
+    # Actualizar Node a versión 20
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    # Configurar java para el flujo de trabajo
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '12.x'
+
+    # Incluir el flujo de trabajo de Flutter
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable' 
+
+    # Obtener los paquetes de Flutter
+    - run: flutter pub get
