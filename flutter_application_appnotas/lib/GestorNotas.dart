@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_application_appnotas/BotonAnimado.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Importa el paquete Firestore
 
 class GestorNotas extends StatefulWidget {
   @override
@@ -15,22 +15,15 @@ class estadoGestor extends State<GestorNotas> {
   TextEditingController nota5 = TextEditingController();
 
   double calcularPromedio() {
-    List<TextEditingController> Controladores = [
-      nota1,
-      nota2,
-      nota3,
-      nota4,
-      nota5,
-    ];
-
+    List<TextEditingController> controladores = [nota1, nota2, nota3, nota4, nota5];
     List<double> notas = [];
-
-    for (TextEditingController Controlador in Controladores) {
-      if (Controlador.text.isNotEmpty) {
-        notas.add(double.parse(Controlador.text));
+    
+    for (TextEditingController controlador in controladores) {
+      if (controlador.text.isNotEmpty) {
+        notas.add(double.parse(controlador.text));
       }
     }
-
+    
     if (notas.length < 2) {
       showDialog(
         context: context,
@@ -49,11 +42,47 @@ class estadoGestor extends State<GestorNotas> {
           );
         },
       );
-      return 0.0;
-    }
+    } else {
+      double promedio = notas.reduce((value, element) => value + element) / notas.length;
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Promedio de notas"),
+            content: Text("El promedio es: $promedio"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Cerrar"),
+              ),
+            ],
+          );
+        },
+      );
 
-    double sumatoria = notas.reduce((value, element) => value + element);
-    return sumatoria / notas.length;
+      guardarNotasFirestore(notas);
+    }
+    return 0.0;
+  }
+
+  Future<void> guardarNotasFirestore(List<double> notas) async {
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      CollectionReference notasRef = firestore.collection('Datos');
+      await notasRef.add({
+        'nota1': notas.length > 0 ? notas[0] : null,
+        'nota2': notas.length > 1 ? notas[1] : null,
+        'nota3': notas.length > 2 ? notas[2] : null,
+        'nota4': notas.length > 3 ? notas[3] : null,
+        'nota5': notas.length > 4 ? notas[4] : null
+      });
+
+      print('Notas guardadas en Firestore correctamente.');
+    } catch (e) {
+      print('Error al guardar las notas en Firestore: $e');
+    }
   }
 
   late String imagenUrl;
@@ -92,20 +121,21 @@ class estadoGestor extends State<GestorNotas> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: 200,
-                height: 200,
+                width: 250,
+                height: 250,
                 child: imagenUrl.isNotEmpty
                     ? Image(
                         image: NetworkImage(imagenUrl),
                         fit: BoxFit.cover,
                       )
-                    : Placeholder(), // Cambiado a Placeholder para evitar error de carga
+                    : Placeholder(),
               ),
-              Text(
-                'INGRESA TUS NOTAS',
-                style: TextStyle(fontSize: 24.0),
-              ),
-              SizedBox(height: 20.0),
+              SizedBox(height: 60.0),
+                Text(
+                  'INGRESA TUS NOTAS',
+                  style: TextStyle(fontSize: 24.0),
+                ),
+              SizedBox(height: 40.0),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
@@ -156,51 +186,9 @@ class estadoGestor extends State<GestorNotas> {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 20.0),
-                    BotonAnimado(
-                      TextoBoton: 'Calcular Promedio',
-                      onPressed: () {
-                        double promedio = calcularPromedio();
-                        if (promedio == 0.0) {
-                          // Muestra una alerta si todas las notas son 0.0
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("Error"),
-                                content: Text("No se necesita calcular el promedio si todas las notas son 0.0."),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Cerrar"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else if (promedio != 0.0) {
-                          // Muestra el promedio si es diferente de 0.0
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("Promedio de notas"),
-                                content: Text("El promedio es: $promedio"),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Cerrar"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      },
-                      contexto: context,
+                    ElevatedButton(
+                      onPressed: calcularPromedio,
+                      child: Text('Calcular Promedio'),
                     ),
                   ],
                 ),

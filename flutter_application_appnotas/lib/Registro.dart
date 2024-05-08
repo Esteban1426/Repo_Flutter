@@ -113,8 +113,8 @@ class EstadoRegistro extends State<Registro> {
           child: Column(
             children: [
               SizedBox(
-                width: 200,
-                height: 200,
+                width: 250,
+                height: 250,
                 child: imagenUrl.isNotEmpty
                     ? Image(
                         image: NetworkImage(imagenUrl),
@@ -122,7 +122,7 @@ class EstadoRegistro extends State<Registro> {
                       )
                     : Placeholder(),
               ),
-              SizedBox(height: 20.0),
+              SizedBox(height: 50.0),
               TextFormField(
                 controller: nombre,
                 decoration: InputDecoration(

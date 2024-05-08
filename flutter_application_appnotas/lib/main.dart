@@ -71,7 +71,7 @@ class WidgetImagenes extends State<ImagenesPricipal> {
                 textAlign: TextAlign.center,
               ), */
               SizedBox(
-                height: 300.0,
+                height: 500.0,
                 child: imageUrl.isNotEmpty
                     ? Image(
                         image: NetworkImage(imageUrl),
