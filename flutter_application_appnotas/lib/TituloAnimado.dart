@@ -15,7 +15,7 @@ class TituloAnimadoEstado extends State<TituloAnimado>
     super.initState();
     Controlador = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2), // Duración de la animación (2 segundos)
+      duration: Duration(seconds: 2),
     );
 
     Controlador.repeat(reverse: true);
@@ -35,7 +35,7 @@ class TituloAnimadoEstado extends State<TituloAnimado>
               style: TextStyle(
                 fontSize: 60.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.white.withOpacity(Controlador.value), // Cambio de opacidad según el valor del controlador de animación
+                color: Colors.white.withOpacity(Controlador.value),
               ),
             ),
           );

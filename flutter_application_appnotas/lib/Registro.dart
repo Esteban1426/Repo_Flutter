@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_application_appnotas/BotonEmerger';
 import 'package:flutter_application_appnotas/Login.dart';
 import 'package:flutter_application_appnotas/BotonAnimado.dart';
 
@@ -205,7 +206,7 @@ class EstadoRegistro extends State<Registro> {
                 },
               ),
               SizedBox(height: 40),
-              BotonAnimado(
+              Zoom(
                 TextoBoton: 'REGISTRAR',
                 onPressed: () {
                   if (_Key.currentState!.validate()) {

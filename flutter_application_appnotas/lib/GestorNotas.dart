@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Importa el paquete Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_appnotas/BotonCaida.dart'; // Importa el paquete Firestore
 
 class GestorNotas extends StatefulWidget {
   @override
@@ -186,9 +187,10 @@ class estadoGestor extends State<GestorNotas> {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 20.0),
-                    ElevatedButton(
+                    BotonCaida(
+                      TextoBoton: 'Iniciar Sesion',
                       onPressed: calcularPromedio,
-                      child: Text('Calcular Promedio'),
+                      contexto: context,
                     ),
                   ],
                 ),
