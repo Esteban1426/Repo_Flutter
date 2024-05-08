@@ -1,11 +1,9 @@
 name: Flutter Contruccion
 
-on: 
-  push:
-    branches: [" master "]
+on: push
 jobs:  
 
-  build: 
+  montar_proyecto: 
     runs-on: ubuntu-latest  
 
     steps:  
