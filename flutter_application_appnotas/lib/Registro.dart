@@ -28,37 +28,35 @@ class EstadoRegistro extends State<Registro> {
         email: email.text,
         password: password.text,
       );
+      
+      await BaseDatos.child('usuarios').child(NuevoUser.user!.uid).set({
+        'nombre': nombre.text,
+        'carrera': carrera.text,
+        'email': email.text,
+        'telefono': telefono.text,
+      });
 
-      if (NuevoUser != null) {
-        await BaseDatos.child('usuarios').child(NuevoUser.user!.uid).set({
-          'nombre': nombre.text,
-          'carrera': carrera.text,
-          'email': email.text,
-          'telefono': telefono.text,
-        });
-
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Registro exitoso"),
-              content: Text("Usuario registrado correctamente."),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => Login()),
-                    );
-                  },
-                  child: Text("OK"),
-                ),
-              ],
-            );
-          },
-        );
-      }
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Registro exitoso"),
+            content: Text("Usuario registrado correctamente."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => Login()),
+                  );
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       showDialog(
         context: context,
