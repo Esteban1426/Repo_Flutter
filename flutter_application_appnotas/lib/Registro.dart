@@ -4,7 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_application_appnotas/BotonEmerger';
 import 'package:flutter_application_appnotas/Login.dart';
-import 'package:flutter_application_appnotas/BotonAnimado.dart';
+
 
 class Registro extends StatefulWidget {
   @override
