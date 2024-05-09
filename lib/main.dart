@@ -55,42 +55,44 @@ class WidgetImagenes extends State<ImagenesPricipal> {
         appBar: AppBar(
           title: Text('Notas Uniagustiniana'),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(height: 50.0),
-              TituloAnimado(),
-              /* Text(
-                '¡Bienvenido estudiante!',
-                style: TextStyle(
-                  fontSize: 60.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(height: 50.0),
+                TituloAnimado(),
+                /* Text(
+                  '¡Bienvenido estudiante!',
+                  style: TextStyle(
+                    fontSize: 60.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                ), */
+                SizedBox(
+                  height: 400.0,
+                  child: imageUrl.isNotEmpty
+                      ? Image(
+                          image: NetworkImage(imageUrl),
+                          fit: BoxFit.cover,
+                        )
+                      : Placeholder(),
                 ),
-                textAlign: TextAlign.center,
-              ), */
-              SizedBox(
-                height: 400.0,
-                child: imageUrl.isNotEmpty
-                    ? Image(
-                        image: NetworkImage(imageUrl),
-                        fit: BoxFit.cover,
-                      )
-                    : Placeholder(),
-              ),
-              SizedBox(height: 20.0),
-                BotonAnimado(
-                TextoBoton: 'Iniciar',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Login()),
-                  );
-                },
-                contexto: context,
-              ),
-            ],
+                SizedBox(height: 20.0),
+                  BotonAnimado(
+                  TextoBoton: 'Iniciar',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Login()),
+                    );
+                  },
+                  contexto: context,
+                ),
+              ],
+            ),
           ),
         ),
       ),

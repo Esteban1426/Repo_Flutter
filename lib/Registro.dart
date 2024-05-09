@@ -104,6 +104,7 @@ class EstadoRegistro extends State<Registro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF5D7CEA),
       appBar: AppBar(
         title: Text('Registro'),
       ),

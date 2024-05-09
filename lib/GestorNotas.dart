@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_application_appnotas/BotonCaida.dart'; // Importa el paquete Firestore
+import 'package:flutter_application_appnotas/BotonCaida.dart';
 
 class GestorNotas extends StatefulWidget {
   @override
@@ -112,7 +112,9 @@ class estadoGestor extends State<GestorNotas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF5D7CEA),
       appBar: AppBar(
+        backgroundColor: Color(0xFF5D7CEA),
         title: Text('Gestor Notas'),
       ),
       body: SingleChildScrollView(
@@ -188,7 +190,7 @@ class estadoGestor extends State<GestorNotas> {
                     ),
                     SizedBox(height: 20.0),
                     BotonCaida(
-                      TextoBoton: 'Iniciar Sesion',
+                      TextoBoton: 'Calcular Promedio',
                       onPressed: calcularPromedio,
                       contexto: context,
                     ),
